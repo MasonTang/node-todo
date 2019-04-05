@@ -64,9 +64,18 @@ module.exports = function (app) {
             .then(todo => res.json(todo))
             .catch(errorHandler)
     })
+
+    app.delete('/todo/:todoId', (req, res) => {
+        console.log(req.params.todoId)
+        Todo
+            .findByIdAndRemove(req.params.todoId)
+            .then((todo) => res.status(204).end())
+            .catch(err => res.status(500).json({ err }))
+    })
+
 }
 
-
+    
 
 
 

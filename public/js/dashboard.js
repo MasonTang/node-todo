@@ -1,59 +1,10 @@
-/////////////////////////////////////////////
-//Users
-///////////////////////////////////////////
-
-
-$('#signup').submit(function (event) {
-    event.preventDefault();
-    const username = $('#username').val();
-    const password = $('#password').val();
-    console.log(username)
-    console.log(password)
-    fetch('/signup', {
-        method: 'POST',
-        body: JSON.stringify({ username, password }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(res => res.json())
-        .then(response => {
-            localStorage.setItem('token', response.authToken)
-            window.location = '../html/dashboard.html'
-        })
-        .catch(error => console.log(error));
-});
-
-
-$("#login").submit(function (event) {
-    event.preventDefault();
-    const username = $('#username').val();
-    const password = $('#password').val();
-
-    fetch('/login', {
-        method: 'POST',
-        body: JSON.stringify({ username, password }), // data can be `string` or {object}!
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(res => res.json())
-        .then(response => {
-            localStorage.setItem('token', response.authToken)
-            window.location = '../html/dashboard.html'
-        })
-        .catch(error => console.log(error));
-});
-
-
     let token = localStorage.getItem('token')
     console.log(token)
 
 //////////////////////////////////////////////////////
 // Get Todos
 /////////////////////////////////////////////////
-$('#data').click(e => {
-    e.preventDefault();
+function getTodos(){
     fetch('/todo', {
         method: 'GET',
         headers: {
@@ -66,14 +17,16 @@ $('#data').click(e => {
         displayText(response)
     })
     .catch(error => console.log(error))
-})
+}
 
 function displayText(responseJson) {
     const text = responseJson.map(data => {
          return `
+        <div class="display-todo"> 
         <textarea cols="30" rows="5">${data.todo}</textarea><br>
         <button class="edit">edit</button>
-        <button class="delete">delete</button><br>
+        <button id="${data._id}" class="delete">delete</button><br>
+        </div>
          `
     })
     $('.displayText').append(text)
@@ -95,8 +48,34 @@ $('#todo-button').click(e => {
         }
     })
     .then(res => res.json())
-    .then(todos => console.log(todos))
-    .catch(error => console.log(error))
+    .then(todos => location.reload(true))
+    .catch(error => console.error(error))
 })
 
+///////////////////////////////////////
+// Delete Todos
+///////////////////////////////////////
 
+$('.displayText').on('click', '.delete', function(e) {
+    e.preventDefault();
+    const todoId = $(this).attr('id');
+    console.log(todoId)
+    const todogrid = $(this).closest('.display-todo')
+    
+    $.ajax({
+        type:'Delete',
+        url: `/todo/${todoId}`,
+        success: function() {
+            todogrid.remove();
+        },
+        error: function(err) {
+            console.log(err)
+        }
+    })
+})
+
+function watchForm() {
+    getTodos()
+}
+
+watchForm()
