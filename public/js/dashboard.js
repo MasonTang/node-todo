@@ -23,8 +23,8 @@ function displayText(responseJson) {
     const text = responseJson.map(data => {
          return `
         <div class="display-todo"> 
-        <textarea cols="30" rows="5">${data.todo}</textarea><br>
-        <button class="edit">edit</button>
+        <textarea class='text-area' cols="30" rows="5">${data.todo}</textarea><br>
+        <button id="${data._id}" class="edit">edit</button>
         <button id="${data._id}" class="delete">delete</button><br>
         </div>
          `
@@ -53,6 +53,33 @@ $('#todo-button').click(e => {
 })
 
 ///////////////////////////////////////
+// Put Todos
+///////////////////////////////////////
+$('.displayText').on('click', '.edit', function(e){
+    e.preventDefault();
+    const todoId = $(this).attr('id');
+    const todo = $(this).closest('.display-todo').find('.text-area').val();
+    console.log(todo)
+
+    $.ajax({
+        type:'Put',
+        url: `/todo/${todoId}`,
+        data: JSON.stringify({todo}),
+        headers:{
+            'Content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        success: function(){
+           location.reload(true)
+        },
+        error: function(err){
+            console.log(err)
+        }
+    })
+})
+
+
+///////////////////////////////////////
 // Delete Todos
 ///////////////////////////////////////
 
@@ -65,6 +92,10 @@ $('.displayText').on('click', '.delete', function(e) {
     $.ajax({
         type:'Delete',
         url: `/todo/${todoId}`,
+        headers:{
+            'Content-type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         success: function() {
             todogrid.remove();
         },

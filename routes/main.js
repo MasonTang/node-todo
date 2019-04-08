@@ -65,13 +65,30 @@ module.exports = function (app) {
             .catch(errorHandler)
     })
 
-    app.delete('/todo/:todoId', (req, res) => {
+    app.delete('/todo/:todoId', jwtAuth, (req, res) => {
         console.log(req.params.todoId)
         Todo
             .findByIdAndRemove(req.params.todoId)
             .then((todo) => res.status(204).end())
             .catch(err => res.status(500).json({ err }))
     })
+
+    app.put('/todo/:todoId', (req, res) => {
+        const updated = {};
+        const updateableFields = ['todo'];
+        updateableFields.forEach(field => {
+            if(field in req.body){
+                updated[field] = req.body[field];
+            }
+        })
+
+        Todo
+            .findByIdAndUpdate(req.params.todoId, {$set: updated}, {new:true})
+            .then(updatedTodo => res.status(200).json({
+                todo:updatedTodo.todo
+            }))
+            .catch(err => res.status(500).json({message:err}))
+    });
 
 }
 
