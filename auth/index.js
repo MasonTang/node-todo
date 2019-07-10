@@ -1,6 +1,6 @@
 'use strict'
 
 const { router } = require('./router');
-const { localStrategy, jwtStrategy } = require('./strategies');
+const { localStrategy, jwtStrategy, GoogleStrategy } = require('./strategies');
 
-module.exports = { router, localStrategy, jwtStrategy };
+module.exports = { router, localStrategy, jwtStrategy, GoogleStrategy };

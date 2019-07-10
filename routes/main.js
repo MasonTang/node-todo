@@ -12,7 +12,6 @@ module.exports = function (app) {
     const jwtAuth = passport.authenticate('jwt', { session: false });
     
 
-
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({
         extended: true

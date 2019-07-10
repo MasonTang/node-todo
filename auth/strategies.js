@@ -2,6 +2,7 @@
 
 const { Strategy: LocalStrategy } = require('passport-local');
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
+const { Strategy: GoogleStrategy} = require('passport-google-oauth').OAuth2Strategy;
 
 const { User } = require('../users/models');
 const { JWT_SECRET } = require('../config');
@@ -49,6 +50,19 @@ const jwtStrategy = new JwtStrategy(
     },
     (payload, done) => {
         done(null, payload.user);
+    }
+);
+
+
+const GoogleStrategy = new GoogleStrategy (
+    {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
+    function(accesstoken, refreshToken, profile, done) {
+        User.findOrCreate({googleId: profile.id}, function (err, user) {
+            return done(err, user); 
+        });
     }
 );
 

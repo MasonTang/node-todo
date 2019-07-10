@@ -7,8 +7,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 
 const { router: usersRouter } = require('./users');
-const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
-
+const { router: authRouter, localStrategy, jwtStrategy, GoogleStrategy } = require('./auth');
 
 mongoose.Promise = global.Promise;
 
@@ -32,6 +31,7 @@ app.use(function (req, res, next) {
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
+passport.use(GoogleStrategy);
 
 app.use('/signup', usersRouter);
 app.use('/login', authRouter);

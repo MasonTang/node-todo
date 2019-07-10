@@ -19,6 +19,9 @@ const createAuthToken = function (user) {
 const localAuth = passport.authenticate('local', { session: false });
 router.use(bodyParser.json());
 
+//////////////////////////////////////////
+//Login
+/////////////////////////////////////////
 router.post('/', localAuth, (req, res) => {
     const authToken = createAuthToken(req.user.serialize());
     res.json({ authToken });
@@ -30,5 +33,11 @@ router.post('/refresh', jwtAuth, (req, res) => {
     const authToken = createAuthToken(req.user);
     res.json({ authToken });
 });
+
+//////////////////////////////////////////////
+//Google Login
+//////////////////////////////////////////////
+router.post('/google', '/auth/google',
+    passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
 
 module.exports = { router };

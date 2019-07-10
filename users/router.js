@@ -16,7 +16,7 @@ function createAuthToken(user) {
     });
 }
 
-//New user post
+//New user post. Signup
 router.post('/', jsonParser, (req, res) => {
     const requiredFields = ['username', 'password'];
     const missingField = requiredFields.find(field => !(field in req.body));
